@@ -26,13 +26,20 @@ function App(props) {
       access: "admin"
     }
   ];
+  // FIXME: Normalize the data!
+  const [currentVolume, setCurrentVolume] = useState(0);
   return (
     <div className="container">
       <PageHeader />
 
       <main className="row">
-        <VolumesList volumes={volumes} />
-        <VolumeDetail volume={volumes[1]} />
+        <VolumesList
+          volumes={volumes}
+          onVolumeChange={id => {
+            setCurrentVolume(id);
+          }}
+        />
+        <VolumeDetail volume={volumes[currentVolume]} />
       </main>
     </div>
   );

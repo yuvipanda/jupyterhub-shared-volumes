@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 
 function VolumesList(props) {
-  const { volumes } = props;
+  const { volumes, onVolumeChange } = props;
   return (
     <div className="col-4 list-group">
-      {volumes.map(volume => {
-        return <VolumeListItem key={volume.name} volume={volume} />;
+      {volumes.map((volume, i) => {
+        return (
+          <VolumeListItem
+            key={volume.name}
+            volume={volume}
+            onClick={() => onVolumeChange(i)}
+          />
+        );
       })}
       <button
         type="button"
@@ -22,6 +28,7 @@ function VolumeListItem(props) {
     <a
       href="#"
       className="list-group-item list-group-item-action flex-column align-items-start"
+      onClick={props.onClick}
     >
       <div className="d-flex w-100 justify-content-between">
         <h5 className="mb-1">{name}</h5>
