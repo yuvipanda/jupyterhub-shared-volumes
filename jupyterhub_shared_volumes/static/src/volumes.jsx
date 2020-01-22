@@ -56,6 +56,7 @@ function VolumeListItem(props) {
 }
 
 function VolumeDetail(props) {
+  let [isAddingNewUser, setIsAddingNewUser] = useState(false);
   const { name, description, users, access } = props.volume;
   return (
     <div className="col border">
@@ -77,17 +78,24 @@ function VolumeDetail(props) {
             </a>
           );
         })}
-
-        <a
-          href="#"
-          className="list-group-item list-group-item-action list-group-item-dark"
-        >
-          <AddUserItem onSave={props.onNewUser} />
-        </a>
-        {access === "admin" && (
+        {access === "admin" && isAddingNewUser && (
           <a
             href="#"
             className="list-group-item list-group-item-action list-group-item-dark"
+          >
+            <AddUserItem
+              onSave={(username, access) => {
+                setIsAddingNewUser(false);
+                props.onNewUser(username, access);
+              }}
+            />
+          </a>
+        )}
+        {access === "admin" && !isAddingNewUser && (
+          <a
+            href="#"
+            className="list-group-item list-group-item-action list-group-item-dark"
+            onClick={() => setIsAddingNewUser(true)}
           >
             <i className="fas fa-plus-circle"></i> Add user
           </a>
