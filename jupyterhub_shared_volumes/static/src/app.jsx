@@ -6,61 +6,10 @@
 import React, { useState, useReducer } from "react";
 import ReactDOM from "react-dom";
 import { VolumesList, VolumeDetail } from "./volumes";
-
-const DUMMY_VOLUMES = {
-  1: {
-    name: "My Volume",
-    description: "Some description of this volume",
-    users: [{ name: "Yuvi Panda", access: "read" }],
-    access: "write"
-  },
-  2: {
-    name: "Your Volume",
-    description: "Some other description of this",
-    users: [
-      {
-        name: "Arfon Smith",
-        access: "admin"
-      },
-      {
-        name: "Yuvi Panda",
-        access: "read"
-      }
-    ],
-    access: "admin"
-  }
-};
-
-const INITIAL_STATE = {
-  volumes: DUMMY_VOLUMES,
-  selectedVolumeId: 1
-};
-
-function reducer(state, action) {
-  console.log(action);
-  switch (action.type) {
-    case "ADD_USER":
-      const { volumeId, user, access } = action;
-      let newState = Object.assign({}, state);
-      newState.volumes[volumeId].users.push({
-        name: user,
-        access: access
-      });
-      console.log(newState);
-      return newState;
-    case "SELECT_VOLUME":
-      const { selectedVolumeId } = action;
-      // FIXME: Removed 'let' here to re-use var name, ugh
-      newState = Object.assign({}, state);
-      newState.selectedVolumeId = selectedVolumeId;
-      return newState;
-  }
-}
+import { reducer, INITIAL_STATE } from "./reducer";
 
 function App(props) {
-  // Current list of volumes is top level state!
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
-  console.log(state);
   return (
     <div className="container">
       <PageHeader />
