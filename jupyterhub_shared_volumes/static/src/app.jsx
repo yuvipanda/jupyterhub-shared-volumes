@@ -19,7 +19,7 @@ function App(props) {
           volumes={state.volumes}
           currentVolumeId={state.selectedVolumeId}
           onVolumeChange={id => {
-            dispatch({ type: "SELECT_VOLUME", volumeId: id });
+            dispatch({ type: "SELECT_VOLUME", selectedVolumeId: id });
           }}
         />
         <VolumeDetail
