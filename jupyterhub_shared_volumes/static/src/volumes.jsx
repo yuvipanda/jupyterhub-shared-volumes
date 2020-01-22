@@ -1,15 +1,25 @@
 import React, { useState } from "react";
 
+const ACCESS_OPTIONS = {
+  read: "Read only",
+  write: "Read / Write",
+  admin: "Read / Write / Admin"
+};
+
 function VolumesList(props) {
-  const { volumes, onVolumeChange } = props;
+  const { volumes, currentVolumeId, onVolumeChange } = props;
+  console.log(volumes);
   return (
     <div className="col-4 list-group">
-      {volumes.map((volume, i) => {
+      {Object.keys(volumes).map(volume_id => {
+        const volume = volumes[volume_id];
+        console.log(volume_id, volume);
         return (
           <VolumeListItem
             key={volume.name}
             volume={volume}
-            onClick={() => onVolumeChange(i)}
+            onClick={() => onVolumeChange(volume_id)}
+            active={currentVolumeId === volume_id}
           />
         );
       })}
@@ -22,12 +32,17 @@ function VolumesList(props) {
     </div>
   );
 }
+
 function VolumeListItem(props) {
   const { name, description, users, access } = props.volume;
+
   return (
     <a
       href="#"
-      className="list-group-item list-group-item-action flex-column align-items-start"
+      className={
+        "list-group-item list-group-item-action flex-column align-items-start " +
+        (props.active ? "active" : "")
+      }
       onClick={props.onClick}
     >
       <div className="d-flex w-100 justify-content-between">
@@ -63,6 +78,12 @@ function VolumeDetail(props) {
           );
         })}
 
+        <a
+          href="#"
+          className="list-group-item list-group-item-action list-group-item-dark"
+        >
+          <AddUserItem onSave={props.onNewUser} />
+        </a>
         {access === "admin" && (
           <a
             href="#"
@@ -73,6 +94,52 @@ function VolumeDetail(props) {
         )}
       </ul>
     </div>
+  );
+}
+
+function AddUserItem(props) {
+  const { onSave } = props;
+  const [newUsername, setNewUsername] = useState("");
+  const [newAccessControl, setNewAccessControl] = useState("read");
+
+  return (
+    <form className="form-inline justify-content-between">
+      <label htmlFor="new-username" className="sr-only">
+        Username
+      </label>
+      <input
+        type="text"
+        className="form-control"
+        placeholder="User Name"
+        id="new-username"
+        className="form-control col-8 pr-2"
+        value={newUsername}
+        onChange={e => setNewUsername(e.target.value)}
+      />
+      <label htmlFor="new-state" className="sr-only">
+        Access Level
+      </label>
+      <select
+        id="new-state"
+        className="form-control col-3"
+        value={newAccessControl}
+        onChange={e => setNewAccessControl(e.target.value)}
+      >
+        <option value="read">Read only</option>
+        <option value="write">Read / Write</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <button
+        id="add-user"
+        className="btn btn-primary col-1"
+        onClick={() => {
+          onSave(newUsername, newAccessControl);
+        }}
+      >
+        Add
+      </button>
+    </form>
   );
 }
 
