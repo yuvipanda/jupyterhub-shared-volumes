@@ -10,6 +10,7 @@ import { reducer, INITIAL_STATE } from "./reducer";
 
 function App(props) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const [selectedVolumeId, setSelectedVolumeId] = useState(1);
   return (
     <div className="container">
       <PageHeader />
@@ -17,13 +18,13 @@ function App(props) {
       <main className="row">
         <VolumesList
           volumes={state.volumes}
-          currentVolumeId={state.selectedVolumeId}
+          currentVolumeId={selectedVolumeId}
           onVolumeChange={id => {
-            dispatch({ type: "SELECT_VOLUME", selectedVolumeId: id });
+            setSelectedVolumeId(id);
           }}
         />
         <VolumeDetail
-          volume={state.volumes[state.selectedVolumeId]}
+          volume={state.volumes[selectedVolumeId]}
           onNewUser={(name, access) => {
             dispatch({
               type: "ADD_USER",
