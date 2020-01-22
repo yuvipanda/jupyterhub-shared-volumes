@@ -88,6 +88,9 @@ function VolumeDetail(props) {
                 setIsAddingNewUser(false);
                 props.onNewUser(username, access);
               }}
+              onClose={() => {
+                setIsAddingNewUser(false);
+              }}
             />
           </a>
         )}
@@ -129,7 +132,7 @@ function AddUserItem(props) {
       </label>
       <select
         id="new-state"
-        className="form-control col-3"
+        className="form-control col-2"
         value={newAccessControl}
         onChange={e => setNewAccessControl(e.target.value)}
       >
@@ -146,6 +149,14 @@ function AddUserItem(props) {
         }}
       >
         Add
+      </button>
+      <button
+        type="button"
+        class="close col-1"
+        aria-label="Close"
+        onClick={props.onClose}
+      >
+        <span aria-hidden="true">&times;</span>
       </button>
     </form>
   );
