@@ -3,7 +3,7 @@
  * 1. List of Volumes
  * 2. Currently selected Volume
  */
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import ReactDOM from "react-dom";
 import { VolumesList, VolumeDetail } from "./volumes";
 
@@ -11,7 +11,7 @@ const DUMMY_VOLUMES = {
   1: {
     name: "My Volume",
     description: "Some description of this volume",
-    users: [{ name: "Yuvi Panda", access: ["read"] }],
+    users: [{ name: "Yuvi Panda", access: "read" }],
     access: "write"
   },
   2: {
@@ -31,32 +31,57 @@ const DUMMY_VOLUMES = {
   }
 };
 
+const INITIAL_STATE = {
+  volumes: DUMMY_VOLUMES,
+  selectedVolumeId: 1
+};
+
+function reducer(state, action) {
+  console.log(action);
+  switch (action.type) {
+    case "ADD_USER":
+      const { volumeId, user, access } = action;
+      let newState = Object.assign({}, state);
+      newState.volumes[volumeId].users.push({
+        name: user,
+        access: access
+      });
+      console.log(newState);
+      return newState;
+    case "SELECT_VOLUME":
+      const { selectedVolumeId } = action;
+      // FIXME: Removed 'let' here to re-use var name, ugh
+      newState = Object.assign({}, state);
+      newState.selectedVolumeId = selectedVolumeId;
+      return newState;
+  }
+}
+
 function App(props) {
   // Current list of volumes is top level state!
-  const [volumes, setVolumes] = useState(DUMMY_VOLUMES);
-  const [currentVolume, setCurrentVolume] = useState(1);
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  console.log(state);
   return (
     <div className="container">
       <PageHeader />
 
       <main className="row">
         <VolumesList
-          volumes={volumes}
-          currentVolumeId={currentVolume}
+          volumes={state.volumes}
+          currentVolumeId={state.selectedVolumeId}
           onVolumeChange={id => {
-            setCurrentVolume(id);
+            dispatch({ type: "SELECT_VOLUME", volumeId: id });
           }}
         />
         <VolumeDetail
-          volume={volumes[currentVolume]}
+          volume={state.volumes[state.selectedVolumeId]}
           onNewUser={(name, access) => {
-            let newVolumes = Object.assign({}, volumes);
-            newVolumes[currentVolume].users.push({
-              name: name,
-              access: access
+            dispatch({
+              type: "ADD_USER",
+              user: name,
+              access: access,
+              volumeId: state.selectedVolumeId
             });
-            console.log(newVolumes);
-            setVolumes(newVolumes);
           }}
         />
       </main>
